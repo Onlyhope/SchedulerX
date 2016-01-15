@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="questList_test">
+        <item>Do homework</item>
+        <item>Study for exam</item>
+        <item>Fix laptop</item>
+        <item>Apply for jobs</item>
+        <item>Train in Dota</item>
+        <item>Train your carries</item>
+    </string-array>
+
+</resources>
