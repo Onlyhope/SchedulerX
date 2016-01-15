@@ -79,8 +79,4 @@ public class QuestListActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    private void testUpload() {
-        int i = 1+1;
-    }
 }
