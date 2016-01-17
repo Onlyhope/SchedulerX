@@ -4,5 +4,4 @@
     <string name="action_about">About</string>
     <string name="action_logout">Logout</string>
     <string name="action_shopping_cart">Shopping Cart</string>
-    <string name="quest_type_default">default</string>
-</resources>
+    </resources>

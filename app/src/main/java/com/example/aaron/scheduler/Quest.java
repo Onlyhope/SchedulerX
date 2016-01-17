@@ -7,13 +7,15 @@ import java.util.Date;
  */
 public class Quest {
 
+    public static final String QUEST_DEFAULT = "default";
+
     private String questTitle;
     private String questType;
     private Date questDeadline;
 
     public Quest(String title, String type, Date date) {
         questTitle = title;
-        questType = type;
+        questType = QUEST_DEFAULT;
         questDeadline = date;
     }
 
