@@ -1,5 +1,5 @@
 # SchedulerX
-Android Studio
+Android Studio 1.5.1
 
 Below is the list of things that needs to be done for the program. Once a task is finish, mark done and your name.
 
