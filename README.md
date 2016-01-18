@@ -10,6 +10,7 @@ Application To Do List:
   - Database can add and delete data. 
   - All data of quest objects are string.
   - Implement save and load quest object data into a datastructure (considering array)
+  
 3. Implement UI display of the data (quests). Adding a new quest should update both the UI and the database itself.
 
 
