@@ -8,20 +8,22 @@ import java.util.Date;
 public class Quest {
 
     public static final String QUEST_DEFAULT = "default";
+    public static final String DEADLINE_DEFAULT = "00/00/00";
 
     private String questTitle;
+    private String questDeadline;
     private String questType;
-    private Date questDeadline;
 
-    public Quest(String title, String type, Date date) {
+
+    public Quest(String title) {
         questTitle = title;
         questType = QUEST_DEFAULT;
-        questDeadline = date;
+        questDeadline = DEADLINE_DEFAULT;
     }
 
     // Getters
 
-    public Date getQuestDeadline() {
+    public String getQuestDeadline() {
         return questDeadline;
     }
 
@@ -43,7 +45,7 @@ public class Quest {
         this.questType = questType;
     }
 
-    public void setQuestDeadline(Date questDeadline) {
+    public void setQuestDeadline(String questDeadline) {
         this.questDeadline = questDeadline;
     }
 }
