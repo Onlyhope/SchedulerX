@@ -1,13 +1,14 @@
 package com.example.aaron.scheduler;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,14 +18,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class QuestListActivity extends AppCompatActivity {
 
     private static final int MENU_ITEM_LOGOUT = 1001;
-    private static final String DEADLINE_DEFAULT = "00/00/00";
-    private static final String TYPE_DEFAULT = "default";
+
     private ListView listView;
+    private List<Quest> quests;
+    private List<String> questNames;
+    private QuestListAdapter adapter;
+    private Quest selectedQuest = new Quest("");
 
     private Button addQuestBtn;
     private Button deleteQuestBtn;
@@ -32,6 +36,10 @@ public class QuestListActivity extends AppCompatActivity {
     private EditText idEditText;
 
     private DataBaseHelper myDb;
+    private DataModel dm;
+
+    private static String webUrl = "https://www.facebook.com";
+    private static String email = "leeaaron326@gmail.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,63 +52,53 @@ public class QuestListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(QuestListActivity.this, "Clicked!", Toast.LENGTH_SHORT).show();
+//                String[] addresses = {email};
+//                Intent sendEmail = new Intent(Intent.ACTION_SENDTO);
+//                sendEmail.setData(Uri.parse("mailto:"));
+//                sendEmail.putExtra(Intent.EXTRA_EMAIL, addresses);
+//                sendEmail.putExtra(Intent.EXTRA_SUBJECT, "Information Request");
+//                sendEmail.putExtra(Intent.EXTRA_TEXT, "Please send some information!");
+//                if (getIntent().resolveActivity(getPackageManager()) != null) {
+//                    startActivity(sendEmail);
+//                }
             }
         });
 
-        // Initializing database
+        // Initializing data manager and database
         myDb = new DataBaseHelper(this);
+        dm = new DataModel();
+
+        questNames = dm.getQuestNames(); // x123: This is currently used to test ListView
 
         // Initializing EditText
         questNameEditText = (EditText) findViewById(R.id.questNameEditText);
         idEditText = (EditText) findViewById(R.id.IdEditText);
 
         // Initializing listView
-        ArrayList<Quest> questArrayList = new ArrayList<>();
         String[] questList = getResources().getStringArray(R.array.questList_test);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+        final ArrayAdapter<String> adapterTest = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                 android.R.id.text1,
-                questList);
+                questNames);
+
+//        QuestListAdapter adapter = new QuestListAdapter(
+//                this, R.layout.quest_list_layout, quests);
         listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(adapter);
+        listView.setAdapter(adapterTest);
 
         // Initializing the addQuestBtn and its listener
         addQuestBtn = (Button) findViewById(R.id.addQuestBtn);
         addQuestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isInserted = myDb.insertData(questNameEditText.getText().toString(), DEADLINE_DEFAULT, TYPE_DEFAULT);
-                if (isInserted) {
-                    Toast.makeText(QuestListActivity.this, "Data inserted", Toast.LENGTH_LONG).show();
+                // Update DateModel
+                boolean isUpdate = dm.addQuestTest(questNameEditText.getText().toString());
 
-                    //Updating listView
-                    boolean isUpdate = myDb.updateData(idEditText.getText().toString(),
-                            questNameEditText.getText().toString(),
-                            DEADLINE_DEFAULT,
-                            TYPE_DEFAULT);
-
-                    if (isUpdate) {
-
-                    }
-
-                    Cursor result = myDb.getAllData();
-                    if (result.getCount() == 0) {
-                        //No data was retrieved
-                        showMessage("Error", "Nothing found");
-                        return;
-                    }
-
-                    StringBuffer buffer = new StringBuffer();
-                    while (result.moveToNext()) {
-                        buffer.append("Id : " + result.getString(0) + "\n");
-                        buffer.append("Name : " + result.getString(1) + "\n");
-                        buffer.append("Deadline : " + result.getString(2) + "\n");
-                        buffer.append("Type : " + result.getString(3) + "\n\n");
-                    }
-                    // Show all data
-                    showMessage("Data", buffer.toString());
+                // Notify and update ListView
+                if (isUpdate == true) {
+                    adapterTest.notifyDataSetChanged(); // x123: Testing listView
                 } else {
-                    Toast.makeText(QuestListActivity.this, "Data not inserted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(QuestListActivity.this, "Error: Data not added", Toast.LENGTH_LONG).show();
+                    return;
                 }
             }
         });
@@ -110,18 +108,21 @@ public class QuestListActivity extends AppCompatActivity {
         deleteQuestBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Integer deletedRows = myDb.deleteData(idEditText.getText().toString());
+                // Update DateModel
+                boolean isUpdate = dm.deleteSelectedQuest(selectedQuest); // x123: Currently deleting 0 index of questList
 
-                if (deletedRows > 0) {
-                    Toast.makeText(QuestListActivity.this, deletedRows + " rows deleted", Toast.LENGTH_SHORT).show();
+                // Notify and update ListView
+                if (isUpdate == true) {
+                    adapterTest.notifyDataSetChanged(); // x123: Testing ListView
                 } else {
-                    Toast.makeText(QuestListActivity.this, "No data deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QuestListActivity.this, "Error: Date not deleted", Toast.LENGTH_LONG).show();
+                    return;
                 }
             }
         });
     }
 
-    public void showMessage(String title, String message) {
+    public void showAlertMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(QuestListActivity.this);
         builder.setCancelable(true);
         builder.setTitle(title);
@@ -153,8 +154,8 @@ public class QuestListActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
                 return true;
             case R.id.action_about:
-                Snackbar.make(getCurrentFocus(), "You selected about", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent goToAbout = new Intent(this, AboutActivity.class);
+                startActivity(goToAbout);
                 return true;
             case MENU_ITEM_LOGOUT:
                 Snackbar.make(getCurrentFocus(), "You selected Logout", Snackbar.LENGTH_LONG)
@@ -164,6 +165,11 @@ public class QuestListActivity extends AppCompatActivity {
                 Snackbar.make(getCurrentFocus(), "You selected Shopping cart", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 return true;
+            case R.id.action_facebook:
+                Intent goFacebook = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
+                if (goFacebook.resolveActivity(getPackageManager()) != null) {
+                    startActivity(goFacebook);
+                }
         }
 
         return super.onOptionsItemSelected(item);

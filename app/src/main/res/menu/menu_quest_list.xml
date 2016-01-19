@@ -22,5 +22,12 @@
         android:icon="@drawable/ic_action_shopping_cart"
         />
 
+    <item
+        android:id="@+id/action_facebook"
+        android:orderInCategory="102"
+        android:title="@string/action_facebook"
+        app:showAsAction="never"
+        />
+
 
 </menu>
