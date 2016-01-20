@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +43,7 @@ public class QuestListActivity extends AppCompatActivity {
     private static String email = "leeaaron326@gmail.com";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quest_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -52,21 +53,13 @@ public class QuestListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String[] addresses = {email};
-//                Intent sendEmail = new Intent(Intent.ACTION_SENDTO);
-//                sendEmail.setData(Uri.parse("mailto:"));
-//                sendEmail.putExtra(Intent.EXTRA_EMAIL, addresses);
-//                sendEmail.putExtra(Intent.EXTRA_SUBJECT, "Information Request");
-//                sendEmail.putExtra(Intent.EXTRA_TEXT, "Please send some information!");
-//                if (getIntent().resolveActivity(getPackageManager()) != null) {
-//                    startActivity(sendEmail);
-//                }
+
             }
         });
 
         // Initializing data manager and database
         myDb = new DataBaseHelper(this);
-        dm = new DataModel();
+        dm = new DataModel(this);
 
         questNames = dm.getQuestNames(); // x123: This is currently used to test ListView
 
@@ -85,13 +78,20 @@ public class QuestListActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(adapterTest);
 
-        // Initializing the addQuestBtn and its listener
+        // Initializing Buttons
         addQuestBtn = (Button) findViewById(R.id.addQuestBtn);
+        deleteQuestBtn = (Button) findViewById(R.id.delete_button);
+
+        // initEventHandler();
         addQuestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Update DateModel
+                if (questNameEditText.getText().toString().equals(""))
+                    return;
+
                 boolean isUpdate = dm.addQuestTest(questNameEditText.getText().toString());
+                questNames.add(questNameEditText.getText().toString());
 
                 // Notify and update ListView
                 if (isUpdate == true) {
@@ -102,24 +102,27 @@ public class QuestListActivity extends AppCompatActivity {
                 }
             }
         });
-
-        // Initializing the deleteQuestBtn and its listener
-        deleteQuestBtn = (Button) findViewById(R.id.delete_button);
         deleteQuestBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 // Update DateModel
                 boolean isUpdate = dm.deleteSelectedQuest(selectedQuest); // x123: Currently deleting 0 index of questList
+                questNames.remove(0);
 
                 // Notify and update ListView
                 if (isUpdate == true) {
                     adapterTest.notifyDataSetChanged(); // x123: Testing ListView
+                    listView.refreshDrawableState();
                 } else {
                     Toast.makeText(QuestListActivity.this, "Error: Date not deleted", Toast.LENGTH_LONG).show();
                     return;
                 }
             }
         });
+    }
+
+    public void initEventHandlers() {
+        //Initializing Event Handlers
     }
 
     public void showAlertMessage(String title, String message) {

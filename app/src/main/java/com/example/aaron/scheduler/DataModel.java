@@ -1,6 +1,8 @@
 package com.example.aaron.scheduler;
 
+import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -15,12 +17,15 @@ public final class DataModel {
 
     public static List<Quest> questList = new ArrayList<>();
     public static Map<Integer, Quest> questMap = new HashMap<>();
+    private DataBaseHelper dbh;
 
     /**
      * Class Constructor:
      * Upon creation of the data manager, data will be loaded from a SQLiteDatabase
      */
-    public DataModel() {
+    public DataModel(Context activity) {
+
+        dbh = new DataBaseHelper(activity);
         loadDataList();
     }
 
@@ -52,8 +57,25 @@ public final class DataModel {
     /**
      * Loads the data from the SQLiteDatabase
      */
-    private static void loadDataList() {
+    private void loadDataList() {
         // Retrieve data from SQLiteDataBase
+        Cursor result = dbh.getAllData();
+        if (result.getCount() == 0) {
+            //No data was retrieved
+            Log.d("x123", "No data was retrieved");
+            return;
+        }
+
+        questList = new ArrayList<>();
+        Quest addQuest;
+
+        while (result.moveToNext()) {
+
+            //addQuest = new Quest(result.getString(1), result.getString(2), result.getString(3));
+            addQuest = new Quest(result.getString(1));
+            questList.add(addQuest);
+        }
+
     }
 
     /**
@@ -123,6 +145,7 @@ public final class DataModel {
     }
 
     public boolean addQuestTest(String name) {
+
         Quest quest = new Quest(name);
         questList.add(quest);
 

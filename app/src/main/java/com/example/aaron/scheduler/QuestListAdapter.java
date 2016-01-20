@@ -33,7 +33,7 @@ public class QuestListAdapter extends ArrayAdapter<Quest> {
         Quest quest = quests.get(position);
 
         TextView nameText = (TextView) convertView.findViewById(R.id.quest_TextView);
-        nameText.setText(quest.getQuestTitle());
+        nameText.setText(quest.getQuestName());
 
         return super.getView(position, convertView, parent);
     }
