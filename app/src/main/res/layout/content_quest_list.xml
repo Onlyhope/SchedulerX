@@ -24,11 +24,11 @@
     <Button
         android:id="@+id/addQuestBtn"
         style="?android:attr/buttonStyleSmall"
+        android:background="@drawable/ic_action_plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:text="Add Quest" />
+        android:layout_alignParentTop="true" />
 
     <ListView
         android:id="@+id/listView"
@@ -36,5 +36,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/questNameEditText"
         android:layout_alignParentStart="true" />
+
+
 
 </RelativeLayout>
