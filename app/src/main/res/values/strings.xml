@@ -6,4 +6,9 @@
     <string name="action_shopping_cart">Shopping Cart</string>
     <string name="title_activity_about">About</string>
     <string name="action_facebook">Facebook</string>
+
+    <string-array name="quest_menu">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
 </resources>

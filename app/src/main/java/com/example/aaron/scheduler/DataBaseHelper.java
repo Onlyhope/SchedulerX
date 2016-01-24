@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by Aaron on 1/17/2016.
@@ -35,7 +36,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(String name, String deadline, String type) {
+    public String insertData(String name, String deadline, String type) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -45,10 +46,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
-        if (result == -1)
-            return false;
-        else
-            return true;
+        Cursor id = db.rawQuery("select * from " + TABLE_NAME + " where name = " + name, null);
+
+        if (id.getCount() == 0) {
+            return "ERROR";
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (id.moveToNext()) {
+            buffer.append(id.getString(0));
+        }
+        return buffer.toString();
     }
 
     public Cursor getAllData() {
@@ -75,8 +83,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return false;
     }
 
-    public Integer deleteData(String id) {
+    public Integer deleteData(Quest deleteQuest) {
         SQLiteDatabase db = this.getWritableDatabase();
+        String id = deleteQuest.getId();
+
+//        String name = deleteQuest.getQuestName();
+//        return db.delete(TABLE_NAME, "name = ?", new String[]{name});
 
         return db.delete(TABLE_NAME, "ID = ?", new String[]{id});
     }

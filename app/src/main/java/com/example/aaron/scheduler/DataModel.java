@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public final class DataModel {
 
-    public static List<Quest> questList = new ArrayList<>();
-    public static Map<Integer, Quest> questMap = new HashMap<>();
+    private List<Quest> questList = new ArrayList<>();
+    private Map<Integer, Quest> questMap = new HashMap<>();
     private DataBaseHelper dbh;
 
     /**
@@ -24,13 +24,12 @@ public final class DataModel {
      * Upon creation of the data manager, data will be loaded from a SQLiteDatabase
      */
     public DataModel(Context activity) {
-
         dbh = new DataBaseHelper(activity);
         loadDataList();
     }
 
     // Getters
-    public static List<Quest> getQuestList() {
+    public List<Quest> getQuestList() {
         return questList;
     }
 
@@ -42,11 +41,11 @@ public final class DataModel {
         return questNames;
     }
 
-    public static List<Quest> getFilteredList(int searchId) {
+    public List<Quest> getFilteredList(String searchId) {
 
         List<Quest> filteredList = new ArrayList<>();
         for (Quest quest : questList) {
-            if (quest.getQuestId() == searchId) {
+            if (quest.getId().equals(searchId)) {
                 filteredList.add(quest);
             }
         }
@@ -58,6 +57,8 @@ public final class DataModel {
      * Loads the data from the SQLiteDatabase
      */
     private void loadDataList() {
+        questList = new ArrayList<>();
+
         // Retrieve data from SQLiteDataBase
         Cursor result = dbh.getAllData();
         if (result.getCount() == 0) {
@@ -66,22 +67,19 @@ public final class DataModel {
             return;
         }
 
-        questList = new ArrayList<>();
         Quest addQuest;
 
         while (result.moveToNext()) {
-
             //addQuest = new Quest(result.getString(1), result.getString(2), result.getString(3));
-            addQuest = new Quest(result.getString(1));
+            addQuest = new Quest(result.getString(1), result.getString(0));
             questList.add(addQuest);
         }
-
     }
 
     /**
      * Saves the date to the SQLiteDatabase
      */
-    public static void savaDataList() {
+    private void savaDataList() {
 
         /*
         // Add Data
@@ -133,28 +131,28 @@ public final class DataModel {
     /**
      * Creates a new quest and adds it to the questList and questMap.
      * @param name The name of the new Quest.
-     * @param itemId The Id of the new Quest.
      * @return true if quest is successfully added.
      */
-    public boolean addQuest(String name, int itemId) {
-        Quest quest = new Quest(name);
-        questList.add(quest);
-        questMap.put(itemId, quest);
+    public boolean addQuest(String name) {
+        Quest quest;
 
-        return true;
-    }
+        String id = dbh.insertData(name, Quest.DEADLINE_DEFAULT, Quest.TYPE_DEFAULT);
+        quest = new Quest(name, id);
 
-    public boolean addQuestTest(String name) {
-
-        Quest quest = new Quest(name);
         questList.add(quest);
 
         return true;
     }
+
 
     public boolean deleteSelectedQuest(Quest deleteQuest) {
-        questList.remove(0);
+        questList.remove(deleteQuest);
 
-        return true;
+        int isDeleted = dbh.deleteData(deleteQuest);
+
+        if (isDeleted > 0)
+            return true;
+        else
+            return false;
     }
 }

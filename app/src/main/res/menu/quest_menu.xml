@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".QuestListActivity">
+    <item
+        android:id="@+id/option_edit"
+        android:title="Edit"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/option_delete"
+        android:title="Delete"
+        android:orderInCategory="101"
+        app:showAsAction="never"/>
+
+</menu>
