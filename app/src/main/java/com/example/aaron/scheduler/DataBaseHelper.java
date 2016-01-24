@@ -46,7 +46,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
-        Cursor id = db.rawQuery("select * from " + TABLE_NAME + " where name = " + name, null);
+        Cursor id = db.rawQuery("select * from " + TABLE_NAME + " where name = '" + name + "'", null);
 
         if (id.getCount() == 0) {
             return "ERROR";
