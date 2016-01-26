@@ -36,6 +36,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     *
+     * @param name
+     * @param deadline
+     * @param type
+     * @return the Id (primary key) that was assigned to the quest.
+     */
     public String insertData(String name, String deadline, String type) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -56,6 +63,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         while (id.moveToNext()) {
             buffer.append(id.getString(0));
         }
+
         return buffer.toString();
     }
 

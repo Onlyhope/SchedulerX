@@ -11,4 +11,6 @@
         <item>Edit</item>
         <item>Delete</item>
     </string-array>
+    <string name="title_activity_quest_detail">QuestDetailActivity</string>
+    <string name="quest_name_label">Task:</string>
 </resources>

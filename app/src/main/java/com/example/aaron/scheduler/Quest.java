@@ -15,11 +15,18 @@ public class Quest {
     private String questDeadline;
     private String questType;
 
-    public Quest(String name, String id) {
+    public Quest(String id, String name) {
         this.id = id;
         questName = name;
-        questType = TYPE_DEFAULT;
         questDeadline = DEADLINE_DEFAULT;
+        questType = TYPE_DEFAULT;
+    }
+
+    public Quest(String id, String name, String deadline, String type) {
+        this.id = id;
+        questName = name;
+        questDeadline = deadline;
+        questType = type;
     }
 
     // Getters

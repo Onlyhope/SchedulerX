@@ -70,8 +70,8 @@ public final class DataModel {
         Quest addQuest;
 
         while (result.moveToNext()) {
-            //addQuest = new Quest(result.getString(1), result.getString(2), result.getString(3));
-            addQuest = new Quest(result.getString(1), result.getString(0));
+            addQuest = new Quest(result.getString(0), result.getString(1), result.getString(2), result.getString(3));
+            //addQuest = new Quest(result.getString(0), result.getString(1));
             questList.add(addQuest);
         }
     }
@@ -137,7 +137,7 @@ public final class DataModel {
         Quest quest;
 
         String id = dbh.insertData(name, Quest.DEADLINE_DEFAULT, Quest.TYPE_DEFAULT);
-        quest = new Quest(name, id);
+        quest = new Quest(id, name);
 
         questList.add(quest);
 

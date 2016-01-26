@@ -21,11 +21,20 @@
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName="com.example.aaron.scheduler.QuestListActivity">
+            android:parentActivityName=".QuestListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.aaron.scheduler.QuestListActivity"/>
+                android:value="com.example.aaron.scheduler.QuestListActivity" />
+        </activity>
+        <activity
+            android:name=".QuestDetailActivity"
+            android:label="@string/title_activity_quest_detail"
+            android:parentActivityName=".QuestListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.aaron.scheduler.QuestListActivity" />
         </activity>
     </application>
 

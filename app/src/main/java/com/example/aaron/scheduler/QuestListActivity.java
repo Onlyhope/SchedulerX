@@ -28,6 +28,10 @@ import java.util.List;
 public class QuestListActivity extends AppCompatActivity {
 
     private static final int MENU_ITEM_LOGOUT = 1001;
+    public static final String QUEST_NAME = "QUEST_NAME";
+    public static final String QUEST_DEADLINE = "QUEST_DEADLINE";
+    public static final String QUEST_TYPE = "QUEST_TYPE";
+    public static final String QUEST_ID = "QUEST_ID";
 
     private ListView listView;
     private List<Quest> quests;
@@ -117,8 +121,14 @@ public class QuestListActivity extends AppCompatActivity {
 
                             switch (userClick) {
                                 case "Edit":
-                                    Intent goToEditQuestActivity = new Intent(QuestListActivity.this, AboutActivity.class);
-                                    startActivity(goToEditQuestActivity);
+                                    Intent goToQuestDetailActivity = new Intent(QuestListActivity.this, QuestDetailActivity.class);
+                                    
+                                    goToQuestDetailActivity.putExtra(QUEST_ID, selectedQuest.getId());
+                                    goToQuestDetailActivity.putExtra(QUEST_NAME, selectedQuest.getQuestName());
+                                    goToQuestDetailActivity.putExtra(QUEST_DEADLINE, selectedQuest.getQuestDeadline());
+                                    goToQuestDetailActivity.putExtra(QUEST_TYPE, selectedQuest.getQuestType());
+                                            
+                                    startActivity(goToQuestDetailActivity);
                                     break;
                                 case "Delete":
                                     boolean isUpdate = dm.deleteSelectedQuest(selectedQuest);
