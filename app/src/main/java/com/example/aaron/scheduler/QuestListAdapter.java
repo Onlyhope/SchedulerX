@@ -1,6 +1,11 @@
 package com.example.aaron.scheduler;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +43,8 @@ public class QuestListAdapter extends ArrayAdapter<Quest> {
 
         TextView nameText = (TextView) convertView.findViewById(R.id.quest_TextView);
         nameText.setText(quest.getQuestName());
+
+//        convertView.setOnLongClickListener(longListen);
 
 //        Button editQuest_Button = (Button) convertView.findViewById(R.id.edit_quest_button);
 //        editQuest_Button.setOnClickListener(new View.OnClickListener() {

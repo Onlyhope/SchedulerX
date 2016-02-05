@@ -4,6 +4,10 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,6 +65,8 @@ public class QuestListActivity extends AppCompatActivity {
             }
         });
 
+        fab.setOnDragListener(DropListener);
+
         Log.d("x123", "onCreate");
 
         // Initializing data manager and database
@@ -76,13 +83,31 @@ public class QuestListActivity extends AppCompatActivity {
                 this, R.layout.quest_list_layout, quests);
         listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(adapter);
-        registerForContextMenu(listView);
 
         // Initializing Buttons
         addQuestBtn = (Button) findViewById(R.id.addQuestBtn);
 
         initEventHandlers();
     }
+
+    private View.OnDragListener DropListener = new View.OnDragListener() {
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            int dragEvent = event.getAction();
+
+            switch(dragEvent) {
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    break;
+                case DragEvent.ACTION_DROP:
+                    Toast.makeText(QuestListActivity.this, "Dropped!", Toast.LENGTH_LONG).show();
+                    break;
+            }
+
+            return true;
+        }
+    };
 
     public void initEventHandlers() {
         //Initializing Event Handlers
@@ -103,6 +128,18 @@ public class QuestListActivity extends AppCompatActivity {
                     Toast.makeText(QuestListActivity.this, "Error: Data not added", Toast.LENGTH_LONG).show();
                     return;
                 }
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(QuestListActivity.this, "On Long Click Listener", Toast.LENGTH_LONG).show();
+
+                ClipData data = ClipData.newPlainText("", "");
+                DragShadow dragShadow = new DragShadow(view);
+
+                view.startDrag(data, dragShadow, view, 0);
+                return false;
             }
         });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -206,15 +243,31 @@ public class QuestListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId()==R.id.listView) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+    private class DragShadow extends View.DragShadowBuilder {
 
-            String[] menuItems = getResources().getStringArray(R.array.quest_menu);
-            for (int i = 0; i<menuItems.length; i++) {
-                menu.add(Menu.NONE, i, i, menuItems[i]);
-            }
+        ColorDrawable greyBox;
+
+        public DragShadow(View view) {
+            super(view);
+            greyBox = new ColorDrawable(Color.LTGRAY);
+        }
+
+        @Override
+        public void onDrawShadow(Canvas canvas) {
+            greyBox.draw(canvas);
+        }
+
+        @Override
+        public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
+            View v = getView();
+
+            int height = (int) v.getHeight()/2;
+            int width = (int) v.getWidth()/2;
+
+            greyBox.setBounds(0, 0, width, height);
+
+            shadowSize.set(width, height);
+            shadowTouchPoint.set((int) width / 2, (int) height / 2);
         }
     }
 }
